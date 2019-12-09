@@ -1,8 +1,11 @@
 #!/usr/local/bin/bash
 
-_IDX=0
+_CLOUD=/Users/Shared/CLOUD/
 
-_DIRIMG=../ionic-toolbox.github.io/assets/img
+USERID="$(basename $(pwd))"
+
+_DIRGIT=$_CLOUD/Development.GitHub/img.github.io
+_DIRIMG=../${USERID}/assets/img
 
 for _REP in $(ls -1d ../* | grep -v github.io)
 do
@@ -27,12 +30,22 @@ do
 
 	_IMG="${_SUBTITLE/ /-}.png"
 	_IMG="${_IMG,,}"
-
-	if [[ ! -f $_DIRIMG/$_IMG ]]; then
+	
+	if   [[ -f "$_DIRIMG/$_IMG" ]]; then
+		:
+	elif [[ -f $_DIRGIT/$_IMG ]]; then
+		cp "$_DIRGIT/$_IMG" "$_DIRIMG"
+	else
 		_IMG="${_TITLE/ /-}.png"
 		_IMG="${_IMG,,}"
-	fi
 
+		if   [[ -f "$_DIRIMG/$_IMG" ]]; then
+			:
+		elif [[ -f $_DIRGIT/$_IMG ]]; then
+			cp "$_DIRGIT/$_IMG" "$_DIRIMG"
+		fi
+	fi
+	
 	[[ "$_LANG" = ""	]] && _LANG=default
 
 	_CATEGORY="${_TYPE,,}"
@@ -43,7 +56,7 @@ do
 
 	echo "- title: \"$_TITLE\""
 	echo "  subtitle: \"$_SUBTITLE\""
-	echo "  link: https://github.com/ionic-toolbox/$_REPO"
+	echo "  link: https://github.com/${USERID}/$_REPO"
 	echo "  lang: $_LANG"
 	echo "  img: ${_IMG}"
 	echo "  category: ${_CATEGORY,,}"
